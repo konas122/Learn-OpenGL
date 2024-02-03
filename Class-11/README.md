@@ -1,3 +1,3 @@
-## 3.5 Light casters
+## 4 Model
 
-http://www.learnopengl.com/#!Lighting/Light-casters
+https://learnopengl.com/#!Model-Loading/Model
