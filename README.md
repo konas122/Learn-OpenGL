@@ -10,6 +10,15 @@ Original Code repository: https://github.com/JoeyDeVries/LearnOpenGL
 vscode + msvc + cmake + vcpkg
 ```
 
+## Requirement
+
+```
+glfw3
+glad
+glm
+assimp
+```
+
 ## Run
 
 ```
