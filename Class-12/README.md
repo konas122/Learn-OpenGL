@@ -1,3 +1,5 @@
-## 3.4 Lighting maps
+## 5.1&5.2 Depth&Stencil testing
 
-http://learnopengl.com/#!Lighting/Lighting-maps
+https://learnopengl.com/Advanced-OpenGL/Depth-testing
+
+https://learnopengl.com/Advanced-OpenGL/Stencil-testing

@@ -1,3 +1,5 @@
-## 3.5 Light casters
+## 5.1&5.2 Depth&Stencil testing
 
-http://www.learnopengl.com/#!Lighting/Light-casters
+https://learnopengl.com/Advanced-OpenGL/Depth-testing
+
+https://learnopengl.com/Advanced-OpenGL/Stencil-testing
