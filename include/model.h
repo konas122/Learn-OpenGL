@@ -1,7 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <glad/glad.h>
+#include <glad/glad.h> 
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -88,10 +88,12 @@ private:
             vertex.Position = vector;
 
             // 处理法线
-            vector.x = mesh->mNormals[i].x;
-            vector.y = mesh->mNormals[i].y;
-            vector.z = mesh->mNormals[i].z;
-            vertex.Normal = vector;
+            if (mesh->HasNormals()) {
+                vector.x = mesh->mNormals[i].x;
+                vector.y = mesh->mNormals[i].y;
+                vector.z = mesh->mNormals[i].z;
+                vertex.Normal = vector;
+            }
 
             // 处理纹理坐标
             if (mesh->mTextureCoords[0]) {
@@ -123,19 +125,29 @@ private:
                 indices.push_back(face.mIndices[j]);
         }
 
-        // 处理材质
-        if (mesh->mMaterialIndex >= 0) {
-            aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-            vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-            vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-            std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-            vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-            textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-        }
+        // process materials
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];    
+        // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
+        // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
+        // Same applies to other texture as the following list summarizes:
+        // diffuse: texture_diffuseN
+        // specular: texture_specularN
+        // normal: texture_normalN
 
+        // 1. diffuse maps
+        vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        // 2. specular maps
+        vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+        // 3. normal maps
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+        // 4. height maps
+        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+        textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        
+        // return a mesh object created from the extracted mesh data
         return Mesh(vertices, indices, textures);
     }
 
@@ -146,7 +158,7 @@ private:
             mat->GetTexture(type, i, &str);
             bool skip = false;
             for (unsigned int j = 0; j < textures_loaded.size(); j++) {
-                if (textures_loaded[j].path == str.C_Str()) {
+                if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0) {
                     textures.push_back(textures_loaded[j]);
                     skip = true;
                     break;
@@ -158,6 +170,7 @@ private:
                 texture.type = typeName;
                 texture.path = str.C_Str();
                 textures.push_back(texture);
+                textures_loaded.push_back(texture);
             }
         }
         return textures;
