@@ -7,7 +7,7 @@ Original Code repository: https://github.com/JoeyDeVries/LearnOpenGL
 ## Environment
 
 ```
-vscode + msvc + cmake + vcpkg
+windows11 + vscode + msvc + cmake + vcpkg
 ```
 
 ## Requirement
@@ -26,5 +26,5 @@ cd [Class-folder]
 mkdir build
 cd build
 cmake ..
-cmake --build .
+cmake --build . --config Debug
 ```
